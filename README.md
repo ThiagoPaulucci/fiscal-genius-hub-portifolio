@@ -1,18 +1,26 @@
 # Fiscal Genius Hub
 
-Plataforma web para organização e processamento inteligente de documentos fiscais, com experiências específicas para usuários, empresas, contadores, lojistas, afiliados e administração.
+Snapshot técnico saneado de uma plataforma web para organização e processamento inteligente de documentos fiscais, com arquitetura pensada para usuários, empresas, contadores, lojistas, afiliados e administração.
 
-> Projeto de portfólio com foco em engenharia de software, automação fiscal e processamento de documentos. Credenciais, segredos e configurações de produção não fazem parte deste repositório público.
+> **Portfólio público:** este repositório não é um espelho do ambiente de produção. Ele apresenta arquitetura e módulos representativos do projeto, enquanto histórico privado, schema produtivo, credenciais, configurações de deploy, dados operacionais e partes proprietárias permanecem fora do repositório público.
 
 ## Visão geral
 
-O Fiscal Genius Hub reúne diferentes fluxos de uma aplicação fiscal em uma única experiência: autenticação, leitura de documentos, dashboards por perfil, relatórios, administração, cashback e recursos voltados a contadores e lojistas.
+O projeto privado completo reúne autenticação, leitura de documentos, dashboards por perfil, relatórios, administração, cashback e recursos para contadores e lojistas. Esta versão pública foi separada do histórico original e preparada especificamente para avaliação técnica e portfólio.
 
-A aplicação foi estruturada para separar responsabilidades entre interface, autenticação, dados e serviços de backend, mantendo regras de acesso adequadas aos diferentes perfis do sistema.
+## O que este snapshot demonstra
 
-## Principais funcionalidades
+- autenticação e gerenciamento de sessão com Supabase;
+- configuração por variáveis de ambiente, sem credenciais embutidas;
+- OCR com fallback e detecção de documentos fiscais;
+- leitura de texto de PDFs;
+- validação inicial de arquivos fiscais;
+- regras fiscais de referência;
+- organização React + TypeScript com separação entre contexto, serviços e integrações;
+- desenho arquitetural para dashboards multi-perfil, RLS e Edge Functions.
 
-- Autenticação de usuários e gerenciamento de sessão
+## Funcionalidades do produto completo
+
 - Login por e-mail, Magic Link e OAuth
 - Leitura e processamento de documentos fiscais
 - Scanner de QR Code
@@ -29,39 +37,13 @@ A aplicação foi estruturada para separar responsabilidades entre interface, au
 
 ## Stack
 
-### Front-end
+**Front-end:** React 18, TypeScript, Vite, React Router, TanStack Query, Tailwind CSS, shadcn/ui / Radix UI, React Hook Form, Zod e Zustand.
 
-- React 18
-- TypeScript
-- Vite
-- React Router
-- TanStack Query
-- Tailwind CSS
-- shadcn/ui / Radix UI
-- React Hook Form
-- Zod
-- Zustand
+**Dados e backend:** Supabase, PostgreSQL, Row Level Security (RLS), Supabase Auth e Edge Functions.
 
-### Dados e backend
+**Documentos:** Tesseract.js, PDF.js, jsPDF, JSZip e processamento de QR Code.
 
-- Supabase
-- PostgreSQL
-- Row Level Security (RLS)
-- Supabase Edge Functions
-- Autenticação e controle de acesso por perfil
-
-### Documentos e processamento
-
-- Tesseract.js
-- PDF.js
-- jsPDF
-- JSZip
-- QR Code / barcode scanning
-
-### Visualização
-
-- Recharts
-- html2canvas
+**Visualização:** Recharts e html2canvas.
 
 ## Arquitetura
 
@@ -73,7 +55,7 @@ React + TypeScript
   │
   ├── Autenticação e controle de sessão
   ├── Dashboards e interfaces por perfil
-  ├── Scanner / processamento de documentos
+  ├── Scanner / OCR / processamento de documentos
   │
   ▼
 Supabase
@@ -84,29 +66,41 @@ Supabase
   └── Edge Functions
 ```
 
-O front-end utiliza TanStack Query para gerenciamento de dados assíncronos e React Router para os diferentes fluxos da aplicação. O backend utiliza os serviços do Supabase e funções server-side para operações que não devem ser executadas diretamente no navegador.
+Mais detalhes estão em [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
-## Perfis e áreas da aplicação
+## Segurança e sanitização
 
-- **Usuário:** autenticação, leitura de documentos, resultados e cashback.
-- **Pessoa Jurídica:** dashboard e acompanhamento de informações fiscais.
-- **Contador:** dashboard financeiro, clientes, relatórios, afiliados e comissões.
-- **Lojista:** notas fiscais, cashback, relatórios e relacionamento com clientes.
-- **Administrador:** usuários, documentos, pagamentos, lojas e indicadores financeiros.
+O repositório público possui `.env` e variantes bloqueados no `.gitignore`. O `.env.example` contém apenas placeholders. A configuração do cliente Supabase utiliza `import.meta.env` e não contém URL ou chave do projeto original.
 
-## Segurança
+O histórico do projeto privado **não foi importado**, justamente para evitar que arquivos de ambiente existentes em commits antigos fossem recuperáveis neste repositório.
 
-O projeto utiliza mecanismos como Row Level Security (RLS), controle de acesso por perfil, proteção de operações sensíveis no backend, gerenciamento de sessão e tokens e variáveis de ambiente para configurações locais.
+Também foram omitidos deliberadamente schema de produção, chaves service-role, configurações de provedores de pagamento, dados reais e parâmetros operacionais de deploy.
 
-Arquivos `.env` são ignorados pelo Git. O arquivo `.env.example` contém somente os nomes e formatos esperados das variáveis, sem credenciais reais.
+## Estrutura pública
 
-## Executando localmente
+```text
+src/
+├── contexts/
+│   └── AuthContext.tsx
+├── data/
+│   └── fiscalRules.ts
+├── integrations/
+│   └── supabase/
+│       ├── client.ts
+│       └── types.ts
+└── services/
+    └── ocr/
+        ├── notaFiscalValidator.ts
+        ├── ocrService.ts
+        └── pdfText.ts
 
-### Pré-requisitos
+docs/
+└── ARCHITECTURE.md
+```
 
-- Node.js
-- npm
-- projeto Supabase próprio para desenvolvimento
+## Executando o snapshot
+
+Crie um projeto Supabase de desenvolvimento próprio e configure as variáveis locais:
 
 ```bash
 git clone <repository-url>
@@ -116,36 +110,7 @@ cp .env.example .env
 npm run dev
 ```
 
-## Scripts
-
-```bash
-npm run dev
-npm run build
-npm run lint
-npm run preview
-```
-
-## Estrutura do projeto
-
-```text
-src/
-├── components/
-├── contexts/
-├── hooks/
-├── pages/
-│   ├── admin/
-│   ├── contador/
-│   └── lojista/
-└── ...
-
-supabase/
-├── functions/
-└── migrations/
-```
-
-## Objetivo do projeto
-
-Este repositório demonstra a construção de uma aplicação full stack com múltiplos perfis, autenticação, banco relacional, processamento de documentos e integrações server-side. O foco do portfólio é apresentar decisões de arquitetura e implementação sem expor credenciais ou configurações privadas de produção.
+O schema completo do banco de produção não acompanha este snapshot. Para expandir a demonstração, gere seus próprios tipos e tabelas em um ambiente Supabase de desenvolvimento.
 
 ## Autor
 
@@ -154,4 +119,4 @@ Software & AI Engineering
 
 ---
 
-Este projeto é apresentado para fins de portfólio e demonstração técnica.
+Projeto apresentado para fins de portfólio e demonstração técnica. O produto e o repositório de produção permanecem privados.
